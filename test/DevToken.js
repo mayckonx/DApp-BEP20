@@ -38,7 +38,7 @@ contract("DevToken", async (accounts) => {
 
     // Grab the balance again to see what it is after calling mint
     const after_balance = await devToken.balanceOf(accounts[1]);
-    const after_supply = await devToken.totalSupply();
+    const after_supply = await devToken.getTotalSupply();
     const supply_plus_addition = new BN(totalSupply).add(new BN(mintedTokens));
 
     expect(after_balance).to.be.bignumber.equal(new BN(mintedTokens));
@@ -56,7 +56,7 @@ contract("DevToken", async (accounts) => {
 
     // Let's use account 1 since that account should have 0
     const initial_balance = await devToken.balanceOf(accounts[1]);
-    const totalSupply = await devToken.totalSupply();
+    const totalSupply = await devToken.getTotalSupply();
 
     // Burn to address 0, it should fail
     await expectRevert(
@@ -83,7 +83,7 @@ contract("DevToken", async (accounts) => {
 
     // Make sure balance and totalSupply are reduced when tokens burn
     const balance = await devToken.balanceOf(accounts[1]);
-    const newSupply = await devToken.totalSupply();
+    const newSupply = await devToken.getTotalSupply();
 
     expect(new BN(balance)).to.be.a.bignumber.equal(
       new BN(initial_balance - 50)
@@ -169,6 +169,8 @@ contract("DevToken", async (accounts) => {
     });
 
     const new_allowance = await devToken.allowance(accounts[0], accounts[1]);
-    expect(new_allowance).to.be.a.bignumber.equal(new BN(50));
+    expect(new_allowance).to.be.a.bignumber.equal(
+      new BN(initial_allowance - 50)
+    );
   });
 });
